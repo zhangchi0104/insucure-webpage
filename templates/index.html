@@ -6,6 +6,28 @@
 
 {%block content%}
 <div>
-  <p class="bg-info index-notification">Please Note:</p>
+  <p class="alert alert-primary">
+    <strong>Disclaimer</strong>: This website is only for demo and learning purposes. 
+    Please do not use knowledge here to attack other computers.
+  </p>
 </div>
+
+{% if attack_types %}
+<div class="container">
+  <div class="row">
+  {% for attack in attack_types %}
+      <div class="col-xs-2 col-md-4">
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">{{ attack['name'] }}</h5>
+            <p class="card-text">{{ attack['description'] }}</p>
+            <a class="btn btn-primary" href="{{attack['route']}}">Show me details</a> 
+          <div> 
+        </div>
+      </div> 
+  {% endfor %}
+  </div>
+</div>
+{% endif %} 
+
 {%endblock%}
