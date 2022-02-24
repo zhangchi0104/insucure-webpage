@@ -23,7 +23,7 @@
     has, civibus suscipiantur ei sit.
     {% endblock %}
     </p>
-    {% if self.demo is defined %}
+    {% if self.demo() %}
     <h5>Live Demo</h5>
     {%block demo%}{% endblock %}
     {% endif %}
