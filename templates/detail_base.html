@@ -58,36 +58,28 @@
     {% endif %}
   </div>
   <div class="col-sm-6 col-md-4">
-    {% if self.general_tips is defined  %}
+    {% if self.general_tips().strip() %}
     <div class="alert alert-success">
       <p><strong>Tips for Everyone</strong></p>
       <ul>
-        <li>
-          Lorem ipsum dolor sit amet, suas iusto vis id, invidunt pertinax eu
-          sit. Postea verterem.
-        </li>
-        <li>Lorem ipsum dolor sit amet.</li>
+        {% block general_tips %}
+        {% endblock %}
       </ul>
     </div>
     {% endif %} 
-    {% if self.dev_tips is defined %}
+    {% if self.dev_tips().strip() %}
     <div class="alert alert-warning">
       <p><strong>Tips for Developers</strong></p>
       <ul>
-        <li>
-          Lorem ipsum dolor sit amet, suas iusto vis id, invidunt pertinax eu
-          sit. Postea verterem.
-        </li>
-        <li>Lorem ipsum dolor sit amet.</li>
+        {% block dev_tips %}
+        {% endblock %}
       </ul>
     </div>
     {% endif %}
-    <div class="alert alert-secondary">
-      <p><strong>Quick History</strong></p>
+    <div class="alert alert-danger">
+      <p><strong>{{self.title()}} Incidents</strong></p>
       <ul>
-        <li>List Item 1</li>
-        <li>List Item 2</li>
-        <li>List Item 3</li>
+        {%block incidents%}{%endblock%} 
       </ul>
     </div>
   </div>
