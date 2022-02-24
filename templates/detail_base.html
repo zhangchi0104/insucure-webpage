@@ -1,0 +1,96 @@
+<!-- @format -->
+
+<!-- prettier ignore -->
+{% extends 'base.html' %} 
+{% block content %}
+<h3>{% block title %}{% endblock %}</h3>
+<div class="row">
+  <div class="col-sm-6 col-md-8">
+    <p>
+    {% block description %} 
+    Lorem ipsum dolor sit amet, ne duo oblique adipisci
+    periculis, ei fierent complectitur sea, ius quaestio postulant an. Duis
+    tacimates te mel, quidam perpetua mediocritatem sea in, usu in exerci causae
+    senserit. Te omittam abhorreant vim. Id vim nominavi percipit, appareat
+    invidunt qui ne, ad vix dolore impetus intellegebat. Per ubique altera
+    nominavi ei. Eu nam sumo appetere similique, his id dicunt oportere. Sumo
+    dignissim sed at, erat principes cu vix, mea id eros causae. Integre maiorum
+    erroribus per ad. Homero minimum cu has, has ad sonet elitr vulputate, sit
+    dicta quando id. Minim disputationi ex vix, et sea everti ponderum mandamus.
+    Vim et inani vivendo. Qui probo choro albucius et, paulo semper ullamcorper
+    vix ut. At omnium latine vel, nibh maiorum efficiendi ius ei. Corpora
+    sensibus sadipscing pri in. Sed vitae accumsan ut, iudicabit voluptatibus ex
+    has, civibus suscipiantur ei sit.
+    {% endblock %}
+    </p>
+    {% if self.demo is defined %}
+    <h5>Live Demo</h5>
+    {%block demo%}{% endblock %}
+    {% endif %}
+    {% if source %} 
+    <h5>Source Code</h5>
+    <div class="accordion" id="source-code">
+      {% for name, source in source.items() %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading-{{ name }}">
+            <button
+              class="accordion-button collapsed"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse-{{ name.replace('.','') }}"
+              aria-expanded="false"
+              aria-controls="collapse-{{ name }}">
+              {{ name }}
+            </button>
+          </h2>
+          <div 
+            id="collapse-{{ name.replace('.','') }}"
+            class="accordion-collapse collapse"
+            aria-labelledby="heading-{{ name }}"
+            data-bs-parent="#source-code">
+            <div class="accordion-body">
+              <pre><code class="language-python" style="max-height: 600px">{{ source }}</code></pre>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  <div class="col-sm-6 col-md-4">
+    {% if self.general_tips is defined  %}
+    <div class="alert alert-success">
+      <p><strong>Tips for Everyone</strong></p>
+      <ul>
+        <li>
+          Lorem ipsum dolor sit amet, suas iusto vis id, invidunt pertinax eu
+          sit. Postea verterem.
+        </li>
+        <li>Lorem ipsum dolor sit amet.</li>
+      </ul>
+    </div>
+    {% endif %} 
+    {% if self.dev_tips is defined %}
+    <div class="alert alert-warning">
+      <p><strong>Tips for Developers</strong></p>
+      <ul>
+        <li>
+          Lorem ipsum dolor sit amet, suas iusto vis id, invidunt pertinax eu
+          sit. Postea verterem.
+        </li>
+        <li>Lorem ipsum dolor sit amet.</li>
+      </ul>
+    </div>
+    {% endif %}
+    <div class="alert alert-secondary">
+      <p><strong>Quick History</strong></p>
+      <ul>
+        <li>List Item 1</li>
+        <li>List Item 2</li>
+        <li>List Item 3</li>
+      </ul>
+    </div>
+  </div>
+  
+</div>
+{% endblock %}
