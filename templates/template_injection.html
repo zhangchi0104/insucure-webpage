@@ -1,0 +1,18 @@
+<!-- prettier ignore -->
+{% extends 'detail_base.html' %}
+{% block demo %}
+{% if posts|length > 0 %}
+<ul>
+{% for post in posts %}
+<li>{{url_for.__globals__['sys'].modules['flask.templating'].render_template_string(post)}}</li>
+{% endfor %}
+</ul>
+{% endif %}
+<form method="POST">
+  <div class="mb-3" >
+    <label for="user-input" class="form-label">Text Something</label>
+    <textarea class="form-control" id="user-input" name="content"></textarea>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+{% endblock %}

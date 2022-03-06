@@ -14,15 +14,15 @@
 
 {% if attack_types %}
 <div class="container">
-  <div class="row">
+  <div class="row" style="align-items: stretch">
   {% for attack in attack_types %}
-      <div class="col-xs-2 col-md-4">
-        <div class="card">
+      <div class="col-xs-2 col-md-4" style="flex: 1;">
+        <div class="card" style="height: 100%">
           <div class="card-body">
             <h5 class="card-title">{{ attack['name'] }}</h5>
             <p class="card-text">{{ attack['description'] }}</p>
             <a class="btn btn-primary" href="{{attack['route']}}">Show me details</a> 
-          <div> 
+          </div> 
         </div>
       </div> 
   {% endfor %}
