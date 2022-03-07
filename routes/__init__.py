@@ -63,7 +63,12 @@ def template_injection_view():
     elif request.method == 'POST':
         content = request.form['content']
         posts.append(content)
-    return render_template('template_injection.html', posts=posts, query=query, source= {
-        "template_injection.html.jinja": _get_source_code('templates/template_injection.html')
-    })
-
+    return render_template(
+        'template_injection.html',
+        posts=posts,
+        query=query,
+        source={
+            "template_injection.html.jinja":
+            _get_source_code('templates/template_injection.html')
+        },
+    )
