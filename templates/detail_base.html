@@ -25,6 +25,7 @@
     </p>
     {% if self.demo() %}
     <h5>Live Demo</h5>
+    <hr></hr>
     {%block demo%}{% endblock %}
     {% endif %}
     {% if source %} 
@@ -49,7 +50,7 @@
             aria-labelledby="heading-{{ name }}"
             data-bs-parent="#source-code">
             <div class="accordion-body">
-              <pre><code class="language-python" style="max-height: 600px">{{ source }}</code></pre>
+              <pre><code class="language-html" style="max-height: 600px">{{ source }}</code></pre>
             </div>
           </div>
         </div>
@@ -83,6 +84,6 @@
       </ul>
     </div>
   </div>
-  
 </div>
+{% block external_js %} {%endblock%}
 {% endblock %}

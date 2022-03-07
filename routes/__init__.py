@@ -53,13 +53,17 @@ def detail_page():
     return render_template(route['template'], **route['variables'])
 
 
-@routes.route('/template-injection', methods=['POST', 'GET', 'DELETE'])
+@routes.route('/template-injection', methods=['POST', 'GET'])
 def template_injection_view():
     posts = []
+    query = request.args.get('query', '')
     print(posts)
     if request.method == 'DELETE':
         posts = []
     elif request.method == 'POST':
         content = request.form['content']
         posts.append(content)
-    return render_template('template_injection.html', posts=posts)
+    return render_template('template_injection.html', posts=posts, query=query, source= {
+        "template_injection.html.jinja": _get_source_code('templates/template_injection.html')
+    })
+

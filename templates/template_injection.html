@@ -1,6 +1,56 @@
 <!-- prettier ignore -->
 {% extends 'detail_base.html' %}
+{% block title %} Template Injection {% endblock %} 
+
+{% block description %}
+<p>
+  There are two kinds of template injection. One is called Server-Side Template Injection (SSTI),
+  the other one is Client-Side Template Injection (CSTI).
+</p>
+
+<strong>What are templates?</strong><br>
+<p>
+  Templates are used by template engines to generate webpages. 
+  Template syntax is based on traditional html syntax but also has some additional syntax,
+  such as variables and loops to render repetitive elements. So when the template engine
+  renders the template, it will replace the template syntax with proper html elements.
+  You can find the template of this page under the source code section. If the template is some code,
+  the engine will run that code that uses the output as the content to be rendered.
+</p>
+
+<strong>Server Side Template Injection</strong><br> 
+<p>
+  In SSTI, the attacker will try to exploit the vulnerability by submitting a piece of code contains
+  with template syntax and see how the server responds to the message. If the server executes the code 
+  and renders the output, it means that SSTI vulnerability exists. The <strong>Insecure Website</strong>
+  demonstrates how it works.
+</p>
+
+<strong>Client Side Templete Injection</strong><br>
+<p>
+  similar to SSTI, Client-Side Template Injection is similar to SSTI, except in CSTI,
+  The code will be executed on the user's computer. The <strong>Insecure Search</strong>
+  shows how you can run JavaScript code using template injection.
+</p>
+<h5>Reference</h5>
+<ul>
+  <li>
+    <a href="https://book.hacktricks.xyz/pentesting-web/client-side-template-injection-csti">
+      Client Side Template Injection - Hack Tricks
+    </a>
+  </li>
+  <li>
+    <a href="https://www.youtube.com/watch?v=SN6EVIG4c-0">
+      Server-Side Template Injections Explained - YouTube
+    </a>
+  </li>
+</ul>
+{% endblock %}
+ 
+{% block dev_tips %}
+{%}
 {% block demo %}
+<h5>The Insecure Thread</h5>
 {% if posts|length > 0 %}
 <ul>
 {% for post in posts %}
@@ -11,8 +61,45 @@
 <form method="POST">
   <div class="mb-3" >
     <label for="user-input" class="form-label">Text Something</label>
-    <textarea class="form-control" id="user-input" name="content"></textarea>
+    <textarea
+      class="form-control" 
+      id="user-input" 
+      name="content" 
+      placeholder="Try some jinja template here: {{'{{' "url_for.__globals__['os'].system('whoami')"'}}'}}"></textarea>
+  </div>
+  <div class="mb-3"> 
     <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 </form>
+<div class="mb-3" id="csti-demo">
+  <h5>Insecure Search</h5>
+  <form style="display: flex" method="GET">
+    <input 
+      class="form-control" 
+      id="searchBar" 
+      name='query'
+      {% raw %}
+      placeholder = "{{constructor.constructor('alert(1)')()}}"
+      {% endraw %}
+    >
+    <button
+      class="btn btn-primary"
+      style="margin: 0 8px;"
+      type="submit"
+    >
+      Search!
+    </button>
+  </form>
+  {%if query|length > 0%}
+  <p>You just searched for: {{ query }}</p>
+  <p>Unfortunately, we found no result :(</p>
+  {% endif %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<script>
+  new Vue({
+    el: "#csti-demo",
+  })
+</script>
 {% endblock %}
+
