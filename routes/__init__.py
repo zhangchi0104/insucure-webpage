@@ -1,9 +1,16 @@
 from os.path import join as join_path
+import sqlite3
 from flask import Blueprint, render_template
 from flask import request
-from flask.templating import render_template_string
 
 routes = Blueprint('/', __name__, template_folder='templates')
+
+db_conn = sqlite3.connect('./databse.sqlite3')
+db_conn.execute("""CREATE TABLE IF NOT EXISTS xss_posts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                post TEXT NOT NULL);""")
+db_conn.commit()
+db_conn.close()
 
 
 def _get_source_code(path: str):
@@ -37,8 +44,15 @@ ROUTE_CONFIG = {
         'the user\'s other accounts in case they use the same passwords',
     ),
     **_mk_route_struct(
-        'Template Injection', 'If the the website uses template to render content, '
-        'attackers can inject code wchich will be executed on the server.'),
+        'Template Injection',
+        'If the the website uses template to render content, '
+        'attackers can inject code wchich will be executed on the server.',
+    ),
+    **_mk_route_struct(
+        'XSS Attack',
+        'Attackers can send a web app malicious code, which allows '
+        'the attacker gain access to sensitive information',
+    )
 }
 
 
@@ -72,3 +86,19 @@ def template_injection_view():
             _get_source_code('templates/template_injection.html')
         },
     )
+
+
+@routes.route('/xss-attack', methods=['POST', 'GET', 'DELETE'])
+def xss_attack_view():
+    db_conn = sqlite3.connect('./databse.sqlite3')
+    if request.method == "POST":
+        db_conn.execute("INSERT INTO xss_posts (post) VALUES (?);",
+                        (request.form["post"], ))
+        db_conn.commit()
+    if request.method == "DELETE":
+        db_conn.execute("DELETE FROM xss_posts")
+        db_conn.commit()
+    posts = [row[0] for row in db_conn.execute("SELECT post from xss_posts")]
+    db_conn.close()
+    query = request.args.get('query', '')
+    return render_template('xss_attack.html', query=query, posts=posts)

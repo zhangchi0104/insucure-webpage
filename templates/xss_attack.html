@@ -1,0 +1,52 @@
+{% extends 'detail_base.html' %}
+{% block title %}Cross-Site Scripting{% endblock %}
+{% block demo %}
+<h5>Insecure Search</h5>
+<form method="get">
+  <div class="mb-3" style="display: flex;">
+    <input type="text" name="query" class="form-control">
+    <button type="submit" class="btn btn-primary" style="margin: 0px 8px">
+      Search
+    </button> 
+  </div>
+  {%if query|length > 0%}
+  <p>You just searched for: {{ query|safe }}</p>
+  <p>Unfortunately, we found no result :(</p>
+  {% endif %}
+</form>
+
+<h5>Insecure Posts</h5>
+{% if posts|length > 0 %}
+<ul>
+  {% for post in posts %}
+  <li>{{post|safe}}</li>
+  {% endfor %}
+</ul>
+
+<button class='btn btn-danger' onclick="clearTable()">CLEAR</button>
+
+{% endif %}
+<form method="POST">
+  <div class="mb-3" >
+    <label for="user-input" class="form-label">Text Something</label>
+    <textarea
+      class="form-control" 
+      id="user-input" 
+      name="post" ></textarea>
+  </div>
+  <div class="mb-3"> 
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+<script>
+function clearTable() {
+  const url = window.location.protocol + "//" + window.location.host + "/xss-attack";
+  fetch(url, {
+    method: "DELETE"
+  }).then(() =>location.reload())
+}
+</script>
+{% endblock %}
+
+
+
