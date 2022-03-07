@@ -48,7 +48,18 @@
 {% endblock %}
  
 {% block dev_tips %}
-{%}
+  <li>Sanitize user input</li>
+  <li>Deploy the app in a safe sandbox e.g., Docker</li>
+{% endblock %}
+
+{% block incidents %}
+  <li>
+    <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-4793">
+      Umbraco CMS TemplateService remote code execution
+    </a>
+  </li>
+{% endblock %}
+
 {% block demo %}
 <h5>The Insecure Thread</h5>
 {% if posts|length > 0 %}
