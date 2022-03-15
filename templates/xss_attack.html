@@ -1,5 +1,40 @@
 {% extends 'detail_base.html' %}
 {% block title %}Cross-Site Scripting{% endblock %}
+
+{% block description %}
+<p>
+  Cross-Site Scripting (XSS) attack is another type of injection attack, which is very common
+  in web applications. In XSS attack, attackers inject a piece of malious code to a website. And
+  the websites will distribute the malisious scripts to end-users. Finally, the browsers will execute
+  the script. 
+</p>
+<p>
+  As the browser trusts the website, the browser will also trust the script. The script is able to
+  access any data stored in the browsers. Such as cookies, session tokens and other data stored by 
+  the browser locally.
+</p>
+<p>
+  There are three types of XSS attackes. Which are DOM-based, reflected, and stored.
+</p>
+<strong>Reflected XSS</strong><br>
+<p> 
+  Reflected XSS happens when the website just "echoing" the request without any processing. 
+  For instance, a website shows the search query from user without converting it to normal string,
+  If the search query contains html valid html code. The browser will execute it to get the proper
+  content. If that query contains malicious javascript code. The browser will execute it as well.
+</p>
+<p>
+  Stored XSS is uses the same idea. But Instead of echoing that. The server will store the malicious
+  content in the database. So each time that content is requested. The server will just pull out
+  the malicious code and execute it.
+</p>
+<p>
+  DOM based XSS is very similar to reflected XSS as they both echo the content from the request.
+  But the key difference is that the request of DOM based XSS might not be passed to the server. 
+  So it is harder to detect. It is generally caused by vulnerable javascript in the DOM.
+</p>
+{% endblock %}
+
 {% block demo %}
 <h5>Insecure Search</h5>
 <form method="get">
