@@ -55,7 +55,8 @@ ROUTE_CONFIG = {
     ),
     **_mk_route_struct(
         'CSRF Attack',
-        ''
+        'Attackers force anthenticated users to send unwanted request'
+        'to web applications',
     )
 }
 
@@ -107,7 +108,7 @@ def xss_attack_view():
     query = request.args.get('query', '')
     return render_template('xss_attack.html', query=query, posts=posts)
 
-@routes.route('/csrf-attack', methods = ['POST', 'GET'])
-def csrf_attack_view():
-    pass
 
+@routes.route('/csrf-attack', methods=['POST', 'GET'])
+def csrf_attack_view():
+    return render_template("csrf_attack.html")

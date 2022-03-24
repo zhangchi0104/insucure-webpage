@@ -1,4 +1,29 @@
-{% extends 'detail_base.html %} 
+{% extends 'detail_base.html' %} 
 {% block title %}
 CSRF Attack
 {% endblock %}
+
+{% block description %}
+<p>
+  Cross Site Request Forgery attack is an attack that tricks the victim to send a request to a website, 
+  which is under the attacker's control. 
+  The attacker will send requests to other web applications to perform undesired
+  operations (such as change password, make payments) on the users' behalf.
+</p>
+
+<span><strong>How does CSRF attack works?</strong><br>
+
+<p>
+  Once the victim sends a request to the attacker's website, the attacker is able to make a request 
+  that inherits your sensitive information such as session token inside cookie to the target website. 
+  There is no way forthe target website to tell if the request is genuine or not. 
+  So the website will just treat it as usual.
+</p>
+
+<p>
+  Think of CSRF attack as an identity theft, where the attacker steals your digital credential through
+  requests to a websites under their control. Unlike phishing, which requires you to enter your personal
+  information, CSRF attack will just forward these information into next request even without knowing theird  details of the sensitive information.
+</p>
+{% endblock %}
+
