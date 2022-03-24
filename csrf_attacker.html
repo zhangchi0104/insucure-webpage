@@ -31,6 +31,7 @@
     <script type="text/javascript">
       const cookie_el = document.querySelector('#cookies')
       cookie_el.innerText = document.cookie
+      document.forms[0].onsubmit  = function(event) {event.preventDefault()}
       document.forms[0].submit()
       const root_el = document.querySelector("#root")
       const msg_el = document.createElement('p')

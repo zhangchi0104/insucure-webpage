@@ -3,13 +3,40 @@ import sqlite3
 from flask import Blueprint, render_template
 from flask import request, make_response, redirect
 
+USERS = ['admin', 'test']
+INSECURE_TOKEN = 'insecure-website-token'
+
 routes = Blueprint('/', __name__, template_folder='templates')
 
-db_conn = sqlite3.connect('./databse.sqlite3')
+db_conn = sqlite3.connect('./database.sqlite3')
 db_conn.execute("""CREATE TABLE IF NOT EXISTS xss_posts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 post TEXT NOT NULL);""")
 db_conn.commit()
+db_conn.close()
+
+db_conn = sqlite3.connect('./database.sqlite3')
+db_conn.execute("""CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                password TEXT NOT NULL);""")
+db_conn.commit()
+db_conn.close()
+
+db_conn = sqlite3.connect('./database.sqlite3')
+cursor = db_conn.execute("SELECT count(*) from users;")
+res = cursor.fetchall()
+
+if res[0][0] == 0:
+    for user in USERS:
+        db_conn.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?);",
+            (user, "password"),
+        )
+    db_conn.commit()
+else:
+    db_conn.execute("UPDATE users SET password='password';")
+    db_conn.commit()
 db_conn.close()
 
 
@@ -95,7 +122,7 @@ def template_injection_view():
 
 @routes.route('/xss-attack', methods=['POST', 'GET', 'DELETE'])
 def xss_attack_view():
-    db_conn = sqlite3.connect('./databse.sqlite3')
+    db_conn = sqlite3.connect('./database.sqlite3')
     if request.method == "POST":
         db_conn.execute("INSERT INTO xss_posts (post) VALUES (?);",
                         (request.form["post"], ))
@@ -111,19 +138,35 @@ def xss_attack_view():
 
 @routes.route('/csrf-attack', methods=['POST', 'GET'])
 def csrf_attack_view():
+    db_conn = sqlite3.connect("database.sqlite3")
+    cursor = db_conn.execute("SELECT username, password from users;")
+    users = cursor.fetchall()
+    db_conn.close()
+    print(users)
     if request.method == 'GET':
-        return render_template("csrf_attack.html")
+        return render_template("csrf_attack.html", users=users)
     else:
-        print("check login")
         if _check_csrf_form('login', request.form):
             resp = make_response(redirect('/csrf-attack'))
             resp.set_cookie(
                 "insecure_website_token",
-                "secret-inseure-token",
+                INSECURE_TOKEN,
                 max_age=3600,
             )
             return resp
-    return render_template("csrf_attack.html")
+        if _check_csrf_form(
+                'modify',
+                request.form,
+                request.cookies.get("insecure_website_token", ""),
+        ):
+            print('AHGAHHAH')
+            db_conn = sqlite3.connect("database.sqlite3")
+            sql_stmt = f"UPDATE users SET password={request.form['password']};"
+            db_conn.execute(sql_stmt)
+            db_conn.commit()
+            print("successfully PWNed database")
+            db_conn.close()
+    return render_template("csrf_attack.html", users=users)
 
 
 def _check_csrf_form(action, form: dict, token=""):
@@ -133,3 +176,6 @@ def _check_csrf_form(action, form: dict, token=""):
             "",
         ) == "admin" and form.get(
             "password", "") == "admin" and form.get("action") == "login"
+    if action == "modify":
+        return token == INSECURE_TOKEN and form["password"] != ""
+    return False

@@ -92,11 +92,11 @@ You already logged in
       </tr> 
     </thead>
     <tbody>
-      {% for row in user_rows %}
+      {% for user in users %}
       <tr>
         <td>{{loop.index}}</td>
-        <td>{{row.username}}</td>
-        <td>{{row.password}}</td>
+        <td>{{user[0]}}</td>
+        <td>{{user[1]}}</td>
       </tr>
       {% endfor %}
     </tbody>
