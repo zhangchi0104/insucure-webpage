@@ -161,7 +161,8 @@ def csrf_attack_view():
         ):
             print('AHGAHHAH')
             db_conn = sqlite3.connect("database.sqlite3")
-            sql_stmt = f"UPDATE users SET password={request.form['password']};"
+            sql_stmt = "UPDATE users SET password='{}';".format(
+                request.form['password'])
             db_conn.execute(sql_stmt)
             db_conn.commit()
             print("successfully PWNed database")
