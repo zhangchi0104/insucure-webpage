@@ -1,7 +1,7 @@
 from os.path import join as join_path
 import sqlite3
 from flask import Blueprint, render_template
-from flask import request
+from flask import request, make_response, redirect
 
 routes = Blueprint('/', __name__, template_folder='templates')
 
@@ -111,4 +111,25 @@ def xss_attack_view():
 
 @routes.route('/csrf-attack', methods=['POST', 'GET'])
 def csrf_attack_view():
+    if request.method == 'GET':
+        return render_template("csrf_attack.html")
+    else:
+        print("check login")
+        if _check_csrf_form('login', request.form):
+            resp = make_response(redirect('/csrf-attack'))
+            resp.set_cookie(
+                "insecure_website_token",
+                "secret-inseure-token",
+                max_age=3600,
+            )
+            return resp
     return render_template("csrf_attack.html")
+
+
+def _check_csrf_form(action, form: dict, token=""):
+    if action == "login":
+        return form.get(
+            "username",
+            "",
+        ) == "admin" and form.get(
+            "password", "") == "admin" and form.get("action") == "login"

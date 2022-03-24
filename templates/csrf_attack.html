@@ -11,7 +11,7 @@ CSRF Attack
   operations (such as change password, make payments) on the users' behalf.
 </p>
 
-<span><strong>How does CSRF attack works?</strong><br>
+<span><strong>How does CSRF attack works?</strong><span<<br>
 
 <p>
   Once the victim sends a request to the attacker's website, the attacker is able to make a request 
@@ -23,7 +23,84 @@ CSRF Attack
 <p>
   Think of CSRF attack as an identity theft, where the attacker steals your digital credential through
   requests to a websites under their control. Unlike phishing, which requires you to enter your personal
-  information, CSRF attack will just forward these information into next request even without knowing theird  details of the sensitive information.
+  information, CSRF attack will just forward these information into next request even without knowing 
+  their details of the sensitive information.
 </p>
 {% endblock %}
 
+{% block demo %}
+<span><strong>Step 1. Log in</strong></span><br>
+<p>
+  Login with username <code>amdin</code> and password <code>admin</code>.
+  Once logged in, you should be able to see the database
+</p>
+{% if not request.cookies.get("insecure_website_token") %}
+<form method="POST" class="row g-3">
+  <input class="visually-hidden" name="action" value="login"> 
+  <div class="col-auto">
+    <label for="username" class="visually-hidden">Email</label>
+    <input
+      readonly
+      type="text" 
+      class="form-control" 
+      id="username" 
+      name="username" 
+      placeholder="admin"
+      value="admin"
+    >
+  </div>
+  <div class="col-auto">
+    <label for="password" class="visually-hidden">Email</label>
+    <input
+      readonly
+      type="text" 
+      class="form-control" 
+      id="password" 
+      name="password" 
+      placeholder="admin" 
+      value="admin"
+    >
+  </div>
+  <div class="col-auto">
+    <button type=submit class="btn btn-primary mb-3">Login</button>
+  </div>
+</form>
+{% else %}
+You already logged in
+{% endif %}
+
+<div>
+  <span><strong>Step 2. Visit the attackers' website</strong></span><br>
+  <p> Now pretend you are the victim, visit the <a href="{{csrf_attacker_url}}">malicious webite</a></p>
+</div> 
+
+<div>
+  <h5>Database View</h5>
+  {% if not request.cookies.get('insecure_website_token') %}
+  You cannot view database until logged in.
+  {% else %}
+  <p>Once you visited the page, revisit this page. See how the database view changes</p>
+  <div class="alert alert-warning" role="alert">
+    This is only for demo purpose. Please do not save plaintexts of usercredentials in the database
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Username</th>
+        <th scope="col">Password</th>
+      </tr> 
+    </thead>
+    <tbody>
+      {% for row in user_rows %}
+      <tr>
+        <td>{{loop.index}}</td>
+        <td>{{row.username}}</td>
+        <td>{{row.password}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+{% endblock %}
