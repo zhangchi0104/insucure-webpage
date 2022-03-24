@@ -52,6 +52,10 @@ ROUTE_CONFIG = {
         'XSS Attack',
         'Attackers can send a web app malicious code, which allows '
         'the attacker gain access to sensitive information',
+    ),
+    **_mk_route_struct(
+        'CSRF Attack',
+        ''
     )
 }
 
@@ -102,3 +106,8 @@ def xss_attack_view():
     db_conn.close()
     query = request.args.get('query', '')
     return render_template('xss_attack.html', query=query, posts=posts)
+
+@routes.route('/csrf-attack', methods = ['POST', 'GET'])
+def csrf_attack_view():
+    pass
+
