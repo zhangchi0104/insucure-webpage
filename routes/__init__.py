@@ -1,4 +1,5 @@
 from os.path import join as join_path
+from os import getenv
 import sqlite3
 from flask import Blueprint, render_template
 from flask import request, make_response, redirect
@@ -40,12 +41,20 @@ else:
 db_conn.close()
 
 
-def _get_source_code(path: str):
+def _get_source_code(path: str, _range=None):
     fp = join_path(path)
     f = open(fp, 'r')
     lines = f.readlines()
     f.close()
-    return ''.join(lines)
+    if _range is None:
+        return ''.join(lines)
+    else:
+        if len(_range) != 2:
+            raise ValueError(f"expect _range to be 2, got {len(_range)}")
+        # make range inclusive
+        lo = _range[0] - 1
+        hi = _range[1] + 1
+        return ''.join(lines[lo:hi])
 
 
 def _mk_route_struct(name: str, desc, **kwargs):
@@ -113,9 +122,9 @@ def template_injection_view():
         'template_injection.html',
         posts=posts,
         query=query,
-        source={
+        sources={
             "template_injection.html.jinja":
-            _get_source_code('templates/template_injection.html')
+            (_get_source_code('templates/template_injection.html'), 'html'),
         },
     )
 
@@ -142,9 +151,23 @@ def csrf_attack_view():
     cursor = db_conn.execute("SELECT username, password from users;")
     users = cursor.fetchall()
     db_conn.close()
-    print(users)
+    csrf_attacker_url = getenv("CSRF_ATTACKER_URL", "")
+    sources = {
+        "csrf_attack.html Live Demo":
+        (_get_source_code("templates/csrf_attack.html", (103, 178)), 'html'),
+        "Code for Route":
+        (_get_source_code("routes/__init__.py", (149, 197)), 'python'),
+        "CSRF attcker":
+        (_get_source_code("./csrf_attacker.html"), 'html')
+    }
+    print(len(sources))
     if request.method == 'GET':
-        return render_template("csrf_attack.html", users=users)
+        return render_template(
+            "csrf_attack.html",
+            users=users,
+            csrf_attacker_url=csrf_attacker_url,
+            sources=sources,
+        )
     else:
         if _check_csrf_form('login', request.form):
             resp = make_response(redirect('/csrf-attack'))
@@ -159,7 +182,6 @@ def csrf_attack_view():
                 request.form,
                 request.cookies.get("insecure_website_token", ""),
         ):
-            print('AHGAHHAH')
             db_conn = sqlite3.connect("database.sqlite3")
             sql_stmt = "UPDATE users SET password='{}';".format(
                 request.form['password'])
@@ -167,7 +189,12 @@ def csrf_attack_view():
             db_conn.commit()
             print("successfully PWNed database")
             db_conn.close()
-    return render_template("csrf_attack.html", users=users)
+    return render_template(
+        "csrf_attack.html",
+        csrf_attacker_url=csrf_attacker_url,
+        sources=sources,
+        users=users,
+    )
 
 
 def _check_csrf_form(action, form: dict, token=""):

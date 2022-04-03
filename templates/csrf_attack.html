@@ -4,6 +4,19 @@ CSRF Attack
 {% endblock %}
 
 {% block description %}
+<figure class="figure">
+  <img
+    src="https://miro.medium.com/max/1400/1*FAzJbMwgCV0cyZKn382lcw.jpeg"
+    alt="csrf-attack"
+    class="figure-img img-fluid"
+  >
+  <figcaption class="figure-caption">
+    Source:
+    <a href="https://medium.com/@anukajinadasa7/cross-site-request-forgery-csrf-ebbb63b0fe95">
+      Cross-Site Request Forgery (CSRF) | by Anuka Jinadasa | Medium
+    </a>
+  </figure-caption>
+</figure>
 <p>
   Cross Site Request Forgery attack is an attack that tricks the victim to send a request to a website, 
   which is under the attacker's control. 
@@ -26,7 +39,66 @@ CSRF Attack
   information, CSRF attack will just forward these information into next request even without knowing 
   their details of the sensitive information.
 </p>
+
+<span><strong>Browser Cookies Policy</strong><span<<br>
+<p>
+All modern browsers supports the <code>SameSite</code> for <code>Set-Cookie</code> in request header
+This field tells web browsers what other websites can access that specific piece of the cookies.
+It has 3 values:
+<ul>
+  <li>
+    <code>Strict</code>: Will not allow any other sites to pass the cookie
+  </li>
+  <li>
+    <code>Lax</code>: Only allows to pass the cookie if the user naviages back to 
+    the original site
+  </li>
+  <li>
+    <code>None</code>: Cookie can be sent with any request. Not allowed unless using https 
+    (i.e., Having <code>Secure</code> set).
+  </li> 
+</ul>
+</p>
+
+<h5>References</h5>
+<ul>
+  <li>
+    <a href="https://owasp.org/www-community/attacks/csrf">
+      Cross Site Request Forgery (CSRF) | OWASP
+    </a>
+  </li>
+  <li>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie">
+      Set-Cookie - HTTP | MDN
+    </a>
+  </li>
+</ul>
 {% endblock %}
+
+{% block  incidents %}
+<li>
+  <a href="https://www.scmagazine.com/news/security-news/netflix-fixes-cross-site-request-forgery-hole">
+    Netflix CSRF Hole 2006
+  </a>
+</li>
+<li>
+  <a href="https://www.defcon.org/images/defcon-17/dc-17-presentations/defcon-17-bailey-mcree-csrf.pdf">
+    McAfee CSRF Vulnerability 2009
+  </a>
+</li>
+
+{% endblock %}
+
+{% block dev_tips %}
+<li>
+  Use <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#token-based-mitigation">
+    CSRF token
+  </a>
+</li>
+<li>Check the <code>referrer</code> field in request header for each request</li>
+{% endblock %}
+
+
 
 {% block demo %}
 <span><strong>Step 1. Log in</strong></span><br>

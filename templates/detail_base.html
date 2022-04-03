@@ -28,29 +28,29 @@
     <hr></hr>
     {%block demo%}{% endblock %}
     {% endif %}
-    {% if source %} 
+    {% if sources %} 
     <h5>Source Code</h5>
     <div class="accordion" id="source-code">
-      {% for name, source in source.items() %}
+      {% for name, (source, ft) in sources.items() %}
         <div class="accordion-item">
-          <h2 class="accordion-header" id="heading-{{ name }}">
+          <h2 class="accordion-header" id="heading-{{ loop.index }}">
             <button
               class="accordion-button collapsed"
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="#collapse-{{ name.replace('.','') }}"
+              data-bs-target="#collapse-{{ loop.index }}"
               aria-expanded="false"
-              aria-controls="collapse-{{ name }}">
+              aria-controls="collapse-{{ loop.index }}">
               {{ name }}
             </button>
           </h2>
           <div 
-            id="collapse-{{ name.replace('.','') }}"
+            id="collapse-{{ loop.index }}"
             class="accordion-collapse collapse"
-            aria-labelledby="heading-{{ name }}"
+            aria-labelledby="heading-{{ loop.index }}"
             data-bs-parent="#source-code">
             <div class="accordion-body">
-              <pre><code class="language-html" style="max-height: 600px">{{ source }}</code></pre>
+              <pre><code class="language-{{ ft | default('html') }}" style="max-height: 600px">{{ source }}</code></pre>
             </div>
           </div>
         </div>
