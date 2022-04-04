@@ -3,6 +3,9 @@
 <!-- prettier ignore -->
 {% extends 'base.html' %} 
 {% block content %}
+<p>
+  <a href="/">&lt; Go Back</a>
+</p>
 <h3>{% block title %}{% endblock %}</h3>
 <div class="row">
   <div class="col-sm-6 col-md-8">
@@ -24,14 +27,14 @@
     {% endblock %}
     </p>
     {% if self.demo() %}
-    <h5>Live Demo</h5>
+    <h4>Live Demo</h4>
     <hr></hr>
     {%block demo%}{% endblock %}
     {% endif %}
     {% if sources %} 
     <h5>Source Code</h5>
     <div class="accordion" id="source-code">
-      {% for name, (source, ft) in sources.items() %}
+      {% for name, source in sources.items() %}
         <div class="accordion-item">
           <h2 class="accordion-header" id="heading-{{ loop.index }}">
             <button
@@ -50,7 +53,7 @@
             aria-labelledby="heading-{{ loop.index }}"
             data-bs-parent="#source-code">
             <div class="accordion-body">
-              <pre><code class="language-{{ ft | default('html') }}" style="max-height: 600px">{{ source }}</code></pre>
+              <pre><code style="max-height: 600px">{{ source }}</code></pre>
             </div>
           </div>
         </div>
