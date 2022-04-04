@@ -5,6 +5,11 @@ from flask import Blueprint, render_template
 from flask import request, make_response, redirect
 
 USERS = ['admin', 'test']
+SEARCH_RESULTS = (
+    ('Twitter', 'twitter', 'https://twitter.com'),
+    ('Google', 'google', 'https://google.com.au'),
+    ('Apple', 'apple website', 'https://apple.com.au'),
+)
 INSECURE_TOKEN = 'insecure-website-token'
 
 routes = Blueprint('/', __name__, template_folder='templates')
@@ -38,6 +43,25 @@ if res[0][0] == 0:
 else:
     db_conn.execute("UPDATE users SET password='password';")
     db_conn.commit()
+db_conn.close()
+
+# create simple table for query results
+db_conn = sqlite3.connect("./database.sqlite3")
+db_conn.execute("""CREATE TABLE IF NOT EXISTS sqli_table (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    url TEXT NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL);""")
+db_conn.commit()
+db_conn.execute("DELETE from sqli_table;")
+db_conn.commit()
+
+for result in SEARCH_RESULTS:
+    db_conn.execute(
+        "INSERT INTO sqli_table (name, description, url) VALUES (?, ?, ?);",
+        result,
+    )
+db_conn.commit()
 db_conn.close()
 
 
@@ -93,6 +117,11 @@ ROUTE_CONFIG = {
         'CSRF Attack',
         'Attackers force anthenticated users to send unwanted request'
         'to web applications',
+    ),
+    **_mk_route_struct(
+        'SQL Injection',
+        "Attackers access the database by injecting SQL statements into"
+        "a vulnerable input field",
     )
 }
 
@@ -145,6 +174,13 @@ def xss_attack_view():
     return render_template('xss_attack.html', query=query, posts=posts)
 
 
+###########################
+#                         #
+#       CSRF ATTACK       #
+#                         #
+###########################
+
+
 @routes.route('/csrf-attack', methods=['POST', 'GET'])
 def csrf_attack_view():
     db_conn = sqlite3.connect("database.sqlite3")
@@ -155,10 +191,9 @@ def csrf_attack_view():
     sources = {
         "csrf_attack.html Live Demo":
         (_get_source_code("templates/csrf_attack.html", (103, 178)), 'html'),
-        "Code for Route":
-        (_get_source_code("routes/__init__.py", (149, 197)), 'python'),
-        "CSRF attcker":
-        (_get_source_code("./csrf_attacker.html"), 'html')
+        "Code for Route": (_get_source_code("routes/__init__.py",
+                                            (149, 197)), 'python'),
+        "CSRF attcker": (_get_source_code("./csrf_attacker.html"), 'html')
     }
     print(len(sources))
     if request.method == 'GET':
@@ -207,3 +242,26 @@ def _check_csrf_form(action, form: dict, token=""):
     if action == "modify":
         return token == INSECURE_TOKEN and form["password"] != ""
     return False
+
+
+#############################
+#                           #
+#       SQL INJECTION       #
+#                           #
+#############################
+
+
+@routes.route('/sql-injection')
+def sql_injection_view():
+    query = request.args.get('query', None)
+    if query is not None:
+        select_statement = f"SELECT name, description, url FROM sqli_table " + f"WHERE name LIKE '%{query}%';"
+        print(select_statement)
+        db_conn = sqlite3.connect("./database.sqlite3")
+        cursor = db_conn.execute(select_statement)
+        results = cursor.fetchall()
+        print(results)
+    else:
+        results = None
+
+    return render_template("sql_injection.html", results=results, query=query)
