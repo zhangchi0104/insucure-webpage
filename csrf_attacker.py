@@ -3,14 +3,14 @@ from os import getenv
 from datetime import datetime
 
 app = Flask(__name__, template_folder='.')
-CSRF_ENDPOINT = getenv('CSRF_ENDPOINT', "http://127.0.0.1/csrf-attack")
+CSRF_ENDPOINT = getenv('CSRF_ENDPOINT', "http://127.0.0.1:5000/csrf-attack")
 
 
 @app.route('/')
 def index():
     return render_template(
         './index.html',
-        csrf_endpoint=CSRF_ENDPOINT,
+        target_url=CSRF_ENDPOINT,
         timestamp=datetime.now(),
     )
 
