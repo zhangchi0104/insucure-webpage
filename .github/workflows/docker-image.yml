@@ -1,0 +1,36 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+      
+    - name: Build insecure website
+      run: docker build . --file Dockerfile --tag zhangchi0104/insecure-website:latest
+      
+    - name: Build the csrf-attacker image
+      run: cd csrf_attacker &&docker build . --file Dockerfile --tag zhangchi0104/csrf-attacker:latest
+      
+    - name: Login into Docker Hub
+      uses: docker/login-action@v1.14.1
+      with:
+        username: zhangchi0104
+        password: ${{DOCKER_ACCESS_TOKEN}}
+       
+    - name: Push Insecure Website Image
+      run: docker push zhangchi0104/insecure-website:latest
+    
+    - name: Push CSRF Attacker Image
+      run: docker push zhangchi0104/csrf-attacker:latest
+      
