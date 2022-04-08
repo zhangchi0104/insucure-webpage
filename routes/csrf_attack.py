@@ -24,7 +24,7 @@ def csrf_attack_view():
         "Code for Route":
         get_source_code("routes/csrf_attack.py"),
         "CSRF attcker":
-        get_source_code("./csrf_attacker.html")
+        get_source_code("./csrf_attacker/index.html")
     }
     if request.method == 'GET':
         return render_template(
