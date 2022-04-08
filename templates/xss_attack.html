@@ -125,7 +125,7 @@
 </form>
 <script>
 function clearTable() {
-  const url = window.location.protocol + "//" + window.location.host + "/xss-attack";
+  const url = window.location.protocol + "//" + window.location.host + "/xss-attack/";
   fetch(url, {
     method: "DELETE"
   }).then(() =>location.reload())

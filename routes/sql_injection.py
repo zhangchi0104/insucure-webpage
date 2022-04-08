@@ -3,8 +3,10 @@ import sqlite3
 from flask import request, render_template, Blueprint
 from utils import get_source_code
 
-
-blueprint = Blueprint("sql-injection", __name__, template_folder="./templates", url_prefix="/sql-injection")
+blueprint = Blueprint("sql-injection",
+                      __name__,
+                      template_folder="./templates",
+                      url_prefix="/sql-injection")
 
 
 @blueprint.route('/')
@@ -26,6 +28,6 @@ def sql_injection_view():
             "SQL Injection Demo":
             get_source_code('./templates/sql_injection.html', (79, 110)),
             "Flask route for this page":
-            get_source_code('./routes/__init__.py', (264, 285))
+            get_source_code('./routes/sql_injection.py')
         },
     )

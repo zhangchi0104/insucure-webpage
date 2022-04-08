@@ -1,11 +1,10 @@
-from python:3.8
+FROM python:3.8
 
+COPY . /app
 WORKDIR /app
-COPY csrf_attacker.py /app/app.py
-COPY csrf_attacker.html /app/index.html
 
-RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple flask
+RUN rm ./databse.sqlite3
+RUN pip install -r requirements.txt
+EXPOSE 5000
 
-CMD ["python" "./app.py"]
-
-
+ENTRYPOINT python app.py
